@@ -98,32 +98,12 @@ export class OrderService {
     }
   }
 
-  static async getAllOrders() {
-    const orders = await Order.findAll({
-      include: [
-        {
-          model: OrderItem,
-          as: 'items',
+  
 
-          include: [
-            {
-              model: MenuItem,
-              as: 'menuItem',
-            },
-          ],
-        },
-      ],
-
-      order: [['createdAt', 'DESC']],
-    });
-
-    return orders;
-  }
-
-  static async getOrderById(id: string, phone: number) {
+  static async getOrderById(id: string, phone: string) {
     const order = await Order.findOne({
       where: {
-        id,
+        order_number: id,
         phone,
       },
 

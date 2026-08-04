@@ -7,7 +7,7 @@ const router = Router();
 export default (app: Router) => {
   router.post('/', OrderController.createOrder);
 
-  router.get('/:id', OrderController.getOrderById);
+  router.post('/get', OrderController.getOrderById);
 
   router.patch('/:id/status', OrderController.updateOrderStatus);
 

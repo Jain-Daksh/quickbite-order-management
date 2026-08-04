@@ -26,8 +26,7 @@ export class OrderController {
   static async getOrderById(req: Request, res: Response) {
     try {
       const { id, phone } = req.body;
-
-      const order = await OrderService.getOrderById(id, phone);
+      const order = await OrderService.getOrderById(String(id), String(phone));
 
       return Success(res, 'Order fetched successfully', order);
     } catch (err: any) {
