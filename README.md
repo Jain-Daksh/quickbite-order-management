@@ -279,7 +279,129 @@ Error response:
 
 ---
 
-# 8. Business Rules
+# 8. Menu APIs
+
+## Get All Menu Items
+
+```
+GET /api/menu
+```
+
+Example Response:
+
+```json
+[
+  {
+    "name": "Margherita Pizza",
+    "price": 299,
+    "category": "Pizza"
+  }
+]
+```
+
+---
+
+## Get Menu By ID
+
+```
+GET /api/menu/:id
+```
+
+---
+
+## Filter Menu By Category
+
+```
+GET /api/menu/category/:category
+```
+
+Example:
+
+```
+GET /api/menu/category/Pizza
+```
+
+---
+
+# 9. Order APIs
+
+## Create Order
+
+```
+POST /api/orders
+```
+
+Request:
+
+```json
+{
+  "customer_name": "Daksh",
+  "phone": "9999999999",
+  "address": "Udaipur Rajasthan",
+  "items": [
+    {
+      "menu_item_id": "uuid",
+      "quantity": 2
+    }
+  ]
+}
+```
+
+### Order Flow
+
+1. Validate request using Zod
+2. Check menu item exists
+3. Check item availability
+4. Calculate subtotal
+5. Calculate total amount
+6. Create order
+7. Create order items
+8. Commit transaction
+
+---
+
+## Search Order
+
+```
+POST /api/orders/search
+```
+
+Request:
+
+```json
+{
+  "orderNumber": "10001",
+  "phone": "9999999999"
+}
+```
+
+Returns:
+
+- Customer details
+- Order status
+- Ordered items
+- Item price
+- Total amount
+
+---
+
+## Update Order Status
+
+```
+PATCH /api/orders/:id/status
+```
+
+Example:
+
+```json
+{
+  "status": "PREPARING"
+}
+```
+
+---
+
+# 10. Business Rules
 
 ## Maximum Quantity Per Product
 
@@ -304,7 +426,7 @@ Rules:
 
 ---
 
-# 9. Validation
+# 11. Validation
 
 Validation is handled using **Zod**.
 
@@ -332,7 +454,7 @@ Invalid request:
 
 ---
 
-# 10. Seed Data
+# 12. Seed Data
 
 Menu seed creates:
 
@@ -349,7 +471,7 @@ npm run seed
 
 ---
 
-# 11. Running Project
+# 13. Running Project
 
 ## Install Dependencies
 
@@ -373,7 +495,7 @@ npm start
 
 ---
 
-# 12. Development Flow
+# 13. Development Flow
 
 Request lifecycle:
 
@@ -392,4 +514,3 @@ Serializer
   ↓
 Response
 ```
-

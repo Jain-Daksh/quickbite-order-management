@@ -1,7 +1,20 @@
-import Home from './pages/Home';
+import Footer from './components/Footer';
+import Header from './components/Header';
+
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
-  return <Home />;
+  return (
+    <div className='min-h-screen flex flex-col'>
+      <Header />
+
+      <main className='flex-1'>
+        <AppRoutes />
+      </main>
+
+      <Footer />
+    </div>
+  );
 }
 
 export default App;
