@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { OrderService } from '../service/order.service';
 import { Success, Failed } from '../utils/api.service';
 import { createOrderSchema } from '../validations/order.validation';
+import orderSerializer from '../serializer/order.serializer';
 
 export class OrderController {
   static async createOrder(req: Request, res: Response) {
@@ -27,8 +28,9 @@ export class OrderController {
     try {
       const { id, phone } = req.body;
       const order = await OrderService.getOrderById(String(id), String(phone));
+      const data = await orderSerializer.show(order);
 
-      return Success(res, 'Order fetched successfully', order);
+      return Success(res, 'Order fetched successfully', data);
     } catch (err: any) {
       return Failed(res, err.message || 'Failed to fetch order', 400, err);
     }
