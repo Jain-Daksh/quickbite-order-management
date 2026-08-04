@@ -9,11 +9,12 @@ export enum OrderStatus {
 
 interface OrderAttributes {
   id: string;
-  customerName: string;
+  order_number?: string;
+  customer_name: string;
   phone: string;
   address: string;
   status: OrderStatus;
-  totalAmount: number;
+  total_amount: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -25,11 +26,12 @@ class Order
   implements OrderAttributes
 {
   declare id: string;
-  declare customerName: string;
+  declare customer_name: string;
+  declare order_number?: string;
   declare phone: string;
   declare address: string;
   declare status: OrderStatus;
-  declare totalAmount: number;
+  declare total_amount: number;
 
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
@@ -42,8 +44,12 @@ class Order
           defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
-
-        customerName: {
+        order_number: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: true,
+        },
+        customer_name: {
           type: DataTypes.STRING,
           allowNull: false,
         },
@@ -63,7 +69,7 @@ class Order
           defaultValue: OrderStatus.ORDER_RECEIVED,
         },
 
-        totalAmount: {
+        total_amount: {
           type: DataTypes.DECIMAL(10, 2),
           allowNull: false,
         },
@@ -72,6 +78,8 @@ class Order
         sequelize,
         tableName: 'orders',
         timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
       },
     );
 

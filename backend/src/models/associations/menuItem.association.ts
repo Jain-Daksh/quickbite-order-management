@@ -3,7 +3,7 @@ import OrderItem from '../OrderItem';
 
 export const setupMenuItemAssociation = () => {
   MenuItem.hasMany(OrderItem, {
-    foreignKey: 'menuItemId',
+    foreignKey: 'menu_item_id',
     as: 'orderItems',
   });
 };

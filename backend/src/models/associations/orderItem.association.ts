@@ -1,15 +1,15 @@
-import OrderItem from "../OrderItem";
-import Order from "../Order";
-import MenuItem from "../MenuItem";
+import OrderItem from '../OrderItem';
+import Order from '../Order';
+import MenuItem from '../MenuItem';
 
 export const setupOrderItemAssociation = () => {
   OrderItem.belongsTo(Order, {
-    foreignKey: "orderId",
-    as: "order",
+    foreignKey: 'order_id',
+    as: 'order',
   });
 
   OrderItem.belongsTo(MenuItem, {
-    foreignKey: "menuItemId",
-    as: "menuItem",
+    foreignKey: 'menu_item_id',
+    as: 'menuItem',
   });
 };
