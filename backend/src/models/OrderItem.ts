@@ -1,10 +1,9 @@
-import { Model, DataTypes, Optional, Sequelize } from "sequelize";
-
+import { Model, DataTypes, Optional, Sequelize } from 'sequelize';
 
 interface OrderItemAttributes {
   id: string;
-  orderId: string;
-  menuItemId: string;
+  order_id: string;
+  menu_item_id: string;
   quantity: number;
   price: number;
   subtotal: number;
@@ -12,25 +11,24 @@ interface OrderItemAttributes {
   updatedAt?: Date;
 }
 
-
-interface OrderItemCreationAttributes
-  extends Optional<OrderItemAttributes, "id"> {}
-
+interface OrderItemCreationAttributes extends Optional<
+  OrderItemAttributes,
+  'id'
+> {}
 
 class OrderItem
   extends Model<OrderItemAttributes, OrderItemCreationAttributes>
   implements OrderItemAttributes
 {
   declare id: string;
-  declare orderId: string;
-  declare menuItemId: string;
+  declare order_id: string;
+  declare menu_item_id: string;
   declare quantity: number;
   declare price: number;
   declare subtotal: number;
 
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
-
 
   static initModel(sequelize: Sequelize) {
     OrderItem.init(
@@ -41,12 +39,12 @@ class OrderItem
           primaryKey: true,
         },
 
-        orderId: {
+        order_id: {
           type: DataTypes.UUID,
           allowNull: false,
         },
 
-        menuItemId: {
+        menu_item_id: {
           type: DataTypes.UUID,
           allowNull: false,
         },
@@ -68,14 +66,15 @@ class OrderItem
       },
       {
         sequelize,
-        tableName: "order_items",
+        tableName: 'order_items',
         timestamps: true,
-      }
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+      },
     );
 
     return OrderItem;
   }
 }
-
 
 export default OrderItem;
