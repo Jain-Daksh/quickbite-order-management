@@ -7,6 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "start": "node dist/app.js",
     "build": "tsc",
+    "seed": "npx ts-node src/seed/menu.seed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
