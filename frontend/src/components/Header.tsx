@@ -1,61 +1,111 @@
+import { Link } from 'react-router-dom';
+
 export default function Header() {
   return (
-    <header className='sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-orange-100'>
-      <div className='container-page h-20 flex items-center justify-between'>
-        <div className='flex items-center gap-2'>
+    <header
+      className='
+    sticky 
+    top-0 
+    z-50 
+    bg-white/90 
+    backdrop-blur
+    border-b
+    border-orange-100
+    '
+    >
+      <div
+        className='
+      container-page
+      h-16
+      flex
+      items-center
+      justify-between
+      '
+      >
+
+        <Link
+          to='/'
+          className='
+        flex
+        items-center
+        gap-2
+        shrink-0
+        '
+        >
           <div
             className='
-          w-10 h-10 
-          rounded-xl
+          w-8
+          h-8
+          rounded-lg
           bg-orange-500
+          text-white
           flex
           items-center
           justify-center
-          text-white
           font-bold
-          text-xl
           '
           >
             Q
           </div>
 
-          <h1 className='text-3xl font-extrabold tracking-tight'>
+          <span
+            className='
+          text-xl
+          font-extrabold
+          '
+          >
             <span className='text-orange-500'>Quick</span>
             Bite
-          </h1>
-        </div>
+          </span>
+        </Link>
 
-        <nav className='flex items-center gap-8'>
-          <a
-            className='font-medium text-zinc-700 hover:text-orange-500 transition'
-            href='#'
+
+        <nav
+          className='
+        flex
+        items-center
+        gap-3
+        sm:gap-6
+        '
+        >
+          <Link
+            className='
+          hidden
+          sm:block
+          text-sm
+          font-medium
+          '
+            to='/'
           >
             Home
-          </a>
+          </Link>
 
-          <a
-            className='font-medium text-zinc-700 hover:text-orange-500 transition'
-            href='#menu'
+          <Link
+            className='
+          text-sm
+          font-medium
+          '
+            to='/menu'
           >
             Menu
-          </a>
+          </Link>
 
           <button
             className='
           bg-orange-500
-          hover:bg-orange-600
           text-white
-          px-6
-          py-3
+          px-3
+          sm:px-5
+          py-2
           rounded-full
+          text-sm
           font-semibold
-          shadow-lg
-          shadow-orange-200
-          transition
-          hover:-translate-y-0.5
+          shadow-md
           '
           >
-            🛒 Cart (0)
+            🛒
+            <span className='hidden sm:inline'>Cart</span>
+            (0)
           </button>
         </nav>
       </div>
