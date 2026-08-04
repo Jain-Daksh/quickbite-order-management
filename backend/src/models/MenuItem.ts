@@ -1,33 +1,28 @@
-import { Sequelize, Model, DataTypes, Optional } from "sequelize";
-
+import { Sequelize, Model, DataTypes, Optional } from 'sequelize';
 
 interface MenuItemAttributes {
   id: string;
   name: string;
   description: string;
   price: number;
-  imageUrl: string;
+  image_url: string;
   category: string;
-  isAvailable: boolean;
+  is_available: boolean;
 }
 
+interface MenuItemCreationAttributes extends Optional<
+  MenuItemAttributes,
+  'id'
+> {}
 
-interface MenuItemCreationAttributes
-  extends Optional<MenuItemAttributes, "id"> {}
-
-
-class MenuItem
-  extends Model<MenuItemAttributes, MenuItemCreationAttributes>
-{
-
+class MenuItem extends Model<MenuItemAttributes, MenuItemCreationAttributes> {
   declare id: string;
   declare name: string;
   declare description: string;
   declare price: number;
-  declare imageUrl: string;
+  declare image_url: string;
   declare category: string;
-  declare isAvailable: boolean;
-
+  declare is_available: boolean;
 
   static initModel(sequelize: Sequelize) {
     MenuItem.init(
@@ -49,11 +44,11 @@ class MenuItem
         },
 
         price: {
-          type: DataTypes.DECIMAL(10,2),
+          type: DataTypes.DECIMAL(10, 2),
           allowNull: false,
         },
 
-        imageUrl: {
+        image_url: {
           type: DataTypes.STRING,
           allowNull: false,
         },
@@ -63,21 +58,22 @@ class MenuItem
           allowNull: false,
         },
 
-        isAvailable: {
+        is_available: {
           type: DataTypes.BOOLEAN,
           defaultValue: true,
         },
       },
       {
         sequelize,
-        tableName: "menu_items",
+        tableName: 'menu_items',
         timestamps: true,
-      }
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+      },
     );
 
     return MenuItem;
   }
 }
-
 
 export default MenuItem;
