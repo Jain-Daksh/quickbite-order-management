@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "7d8a4867-a0f6-4da8-802a-02de04e38220",
+		"name": "QuickBite Order Management API",
+		"description": "Menu and Order APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "53009360",
+		"_collection_link": "https://jdaksh488-7784054.postman.co/workspace/Daksh-Jain's-Workspace~8a4d5b6a-9a58-46c6-8c11-ba594a65829e/collection/53009360-7d8a4867-a0f6-4da8-802a-02de04e38220?action=share&source=collection_link&creator=53009360"
+	},
+	"item": [
+		{
+			"name": "Menu APIs",
+			"item": [
+				{
+					"name": "Get All Menu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/menu"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Menu By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/menu/{{menuItemId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Menu By Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/menu/category/Pizza"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order APIs",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_name\": \"Daksh\",\n  \"phone\": \"9999999999\",\n  \"address\": \"Udaipur Rajasthan\",\n  \"items\": [\n    {\n      \"menu_item_id\": \"{{menuItemId}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By ID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{orderId}},\r\n    \"phone\":{{phone}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders/get"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"PREPARING\"\n}"
+						},
+						"url": "{{baseUrl}}/orders/{{orderId}}/status"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/orders/{{orderId}}"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api"
+		},
+		{
+			"key": "orderId",
+			"value": "10001"
+		},
+		{
+			"key": "menuItemId",
+			"value": "4e3b3acb-ec2e-4daa-bf73-14e4438e6a1e"
+		},
+		{
+			"key": "phone",
+			"value": "9999999999"
+		}
+	]
+}
