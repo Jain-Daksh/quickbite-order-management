@@ -26,7 +26,7 @@ export default function Cart() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [cartTotal, setCartTotal] = useState(0);
-
+  const [removeItem, setRemoveItem] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,8 +54,7 @@ export default function Cart() {
     return <div className='py-20 text-center'>Loading cart...</div>;
   }
 
-  const delivery = 40;
-  const total = cartTotal + delivery;
+  const total = cartTotal;
 
   return (
     <section
@@ -181,13 +180,13 @@ export default function Cart() {
                       </p>
 
                       <button
-                        onClick={() => removeFromCart(product.productId)}
+                        onClick={() => setRemoveItem(product)}
                         className='
-                      text-red-500
-                      text-sm
-                      mt-3
-                      hover:text-red-700
-                      '
+  text-red-500
+  text-sm
+  mt-3
+  hover:text-red-700
+  '
                       >
                         Remove
                       </button>
@@ -289,12 +288,6 @@ export default function Cart() {
                   <span className='font-semibold'>₹{cartTotal}</span>
                 </div>
 
-                <div className='flex justify-between'>
-                  <span>Delivery</span>
-
-                  <span className='font-semibold'>₹{delivery}</span>
-                </div>
-
                 <hr />
 
                 <div
@@ -338,6 +331,97 @@ export default function Cart() {
           </div>
         )}
       </div>
+
+      {removeItem && (
+        <div
+          className='
+    fixed
+    inset-0
+    bg-black/40
+    backdrop-blur-sm
+    flex
+    items-center
+    justify-center
+    z-50
+    '
+        >
+          <div
+            className='
+      bg-white
+      rounded-3xl
+      p-8
+      w-[90%]
+      max-w-md
+      shadow-2xl
+      '
+          >
+            <h2
+              className='
+        text-2xl
+        font-bold
+        text-zinc-900
+        '
+            >
+              Remove item?
+            </h2>
+
+            <p
+              className='
+        text-zinc-500
+        mt-3
+        '
+            >
+              Are you sure you want to remove
+              <span className='font-semibold text-zinc-800'>
+                {' '}
+                {removeItem.name}
+              </span>{' '}
+              from your cart?
+            </p>
+
+            <div
+              className='
+        flex
+        gap-3
+        mt-7
+        '
+            >
+              <button
+                onClick={() => setRemoveItem(null)}
+                className='
+          flex-1
+          py-3
+          rounded-xl
+          border
+          border-zinc-200
+          font-semibold
+          hover:bg-zinc-50
+          '
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  removeFromCart(removeItem.productId);
+                  setRemoveItem(null);
+                }}
+                className='
+          flex-1
+          py-3
+          rounded-xl
+          bg-red-500
+          text-white
+          font-semibold
+          hover:bg-red-600
+          '
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
