@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { getOrderById } from '../api/index';
-
+import { socket } from '../socket.ts/index';
 interface OrderItem {
   menu_item_id: string;
   name: string;
@@ -24,6 +24,13 @@ interface Order {
   created_at: string;
   items: OrderItem[];
 }
+
+const statusProgress = {
+  ORDER_RECEIVED: 'w-1/4',
+  PREPARING: 'w-2/4',
+  OUT_FOR_DELIVERY: 'w-3/4',
+  DELIVERED: 'w-full',
+};
 
 export default function TrackOrderPage() {
   const [orderId, setOrderId] = useState('');
@@ -76,6 +83,22 @@ export default function TrackOrderPage() {
       });
 
       setOrder(response.data);
+      const currentOrder = response.data;
+console.log('currentOrder',currentOrder)
+      socket.emit('join-order', currentOrder.id);
+
+      socket.on('order-status-updated', (data) => {
+        if (data.orderId === currentOrder.id) {
+          setOrder((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  status: data.status,
+                }
+              : prev,
+          );
+        }
+      });
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Unable to find your order.');
     } finally {
@@ -83,6 +106,13 @@ export default function TrackOrderPage() {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      socket.off('order-status-updated');
+    };
+  }, []);
+
+  const progress = statusProgress[order?.status as keyof typeof statusProgress];
   return (
     <section
       className='
@@ -232,12 +262,12 @@ export default function TrackOrderPage() {
 
                   <div className='h-2 bg-zinc-200 rounded-full mt-3 overflow-hidden'>
                     <div
-                      className='
-            h-full
-            bg-orange-500
-            w-1/4
-            rounded-full
-            '
+                      className={`
+h-full
+bg-orange-500
+rounded-full
+${progress}
+`}
                     />
                   </div>
                 </div>
