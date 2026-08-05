@@ -77,7 +77,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
           : item,
       );
-      toast.success('Removed from cart');
+      toast.success('Item Quantity updated ');
     }
 
     saveCart(updated);
