@@ -8,7 +8,11 @@ export class OrderController {
   static async createOrder(req: Request, res: Response) {
     try {
       const validatedOrderData = createOrderSchema.parse(req.body);
-      const order = await OrderService.createOrder(validatedOrderData);
+      // const io = req.app.get('io');
+
+      const order = await OrderService.createOrder(validatedOrderData, 
+        // io
+      );
       return Success(res, 'Order placed successfully', order);
     } catch (err: any) {
       if (err.name === 'ZodError') {

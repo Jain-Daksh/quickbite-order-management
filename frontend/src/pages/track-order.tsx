@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { getOrderById } from '../api/index';
-
+import { socket } from '../socket.ts/index';
 interface OrderItem {
   menu_item_id: string;
   name: string;
@@ -25,43 +25,52 @@ interface Order {
   items: OrderItem[];
 }
 
+const statusProgress = {
+  ORDER_RECEIVED: 'w-1/4',
+  PREPARING: 'w-2/4',
+  OUT_FOR_DELIVERY: 'w-3/4',
+  DELIVERED: 'w-full',
+};
+
 export default function TrackOrderPage() {
   const [orderId, setOrderId] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [order, setOrder] = useState<Order | null>(null);
-
+  const [errors, setErrors] = useState({
+    orderId: '',
+    phone: '',
+  });
   const validateForm = () => {
-    if (!orderId.trim()) {
-      return 'Please enter Order Number.';
-    }
+    const newErrors = {
+      orderId: '',
+      phone: '',
+    };
 
-    if (!/^\d+$/.test(orderId)) {
-      return 'Order Number must contain only numbers.';
+    if (!orderId.trim()) {
+      newErrors.orderId = 'Order Number is required';
+    } else if (!/^\d+$/.test(orderId)) {
+      newErrors.orderId = 'Order Number must contain only numbers';
     }
 
     if (!phone.trim()) {
-      return 'Please enter Phone Number.';
+      newErrors.phone = 'Phone Number is required';
+    } else if (!/^\d+$/.test(phone)) {
+      newErrors.phone = 'Phone Number must contain only numbers';
+    } else if (phone.length !== 10) {
+      newErrors.phone = 'Phone Number must be exactly 10 digits';
     }
 
-    if (!/^\d+$/.test(phone)) {
-      return 'Phone Number must contain only numbers.';
-    }
+    setErrors(newErrors);
 
-    if (phone.length !== 10) {
-      return 'Phone Number must be exactly 10 digits.';
-    }
-
-    return '';
+    return !Object.values(newErrors).some((error) => error !== '');
   };
   const handleTrackOrder = async (e: FormEvent) => {
     e.preventDefault();
 
-    const validationError = validateForm();
 
-    if (validationError) {
-      setError(validationError);
+    if (!validateForm()) {
       return;
     }
 
@@ -76,6 +85,22 @@ export default function TrackOrderPage() {
       });
 
       setOrder(response.data);
+      const currentOrder = response.data;
+      console.log('currentOrder', currentOrder);
+      socket.emit('join-order', currentOrder.id);
+
+      socket.on('order-status-updated', (data) => {
+        if (data.orderId === currentOrder.id) {
+          setOrder((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  status: data.status,
+                }
+              : prev,
+          );
+        }
+      });
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Unable to find your order.');
     } finally {
@@ -83,6 +108,13 @@ export default function TrackOrderPage() {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      socket.off('order-status-updated');
+    };
+  }, []);
+
+  const progress = statusProgress[order?.status as keyof typeof statusProgress];
   return (
     <section
       className='
@@ -124,16 +156,27 @@ export default function TrackOrderPage() {
                     <input
                       type='text'
                       inputMode='numeric'
-                      pattern='[0-9]*'
                       maxLength={10}
                       className='input'
                       placeholder='Enter Order Number'
                       value={orderId}
                       onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, '');
+
                         setOrderId(value);
+
+                        setErrors({
+                          ...errors,
+                          orderId: '',
+                        });
                       }}
                     />
+
+                    {errors.orderId && (
+                      <p className='text-red-500 text-sm mt-1'>
+                        {errors.orderId}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -144,24 +187,33 @@ export default function TrackOrderPage() {
                     <input
                       type='tel'
                       inputMode='numeric'
-                      pattern='[0-9]*'
                       maxLength={10}
                       className='input'
                       placeholder='Enter Phone Number'
                       value={phone}
                       onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, '');
+
                         setPhone(value);
+
+                        setErrors({
+                          ...errors,
+                          phone: '',
+                        });
                       }}
                     />
+
+                    {errors.phone && (
+                      <p className='text-red-500 text-sm mt-1'>
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
 
                   <button
                     type='submit'
                     className='btn-primary w-full'
-                    disabled={
-                      loading || orderId.length === 0 || phone.length !== 10
-                    }
+                    disabled={loading}
                   >
                     {loading ? 'Tracking Order...' : 'Track Order'}
                   </button>
@@ -232,12 +284,12 @@ export default function TrackOrderPage() {
 
                   <div className='h-2 bg-zinc-200 rounded-full mt-3 overflow-hidden'>
                     <div
-                      className='
-            h-full
-            bg-orange-500
-            w-1/4
-            rounded-full
-            '
+                      className={`
+h-full
+bg-orange-500
+rounded-full
+${progress}
+`}
                     />
                   </div>
                 </div>
@@ -272,7 +324,7 @@ export default function TrackOrderPage() {
               {/* Items */}
 
               <div className='card p-8'>
-                <h3 className='text-xl font-bold mb-6'>🍕 Your Pizza</h3>
+                <h3 className='text-xl font-bold mb-6'>Your Items</h3>
 
                 <div className='space-y-5'>
                   {order.items.map((item) => (
