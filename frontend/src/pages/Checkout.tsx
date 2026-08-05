@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { createOrder, getCartItems } from '../api';
 
+
+
 export default function Checkout() {
   const navigate = useNavigate();
 
@@ -95,12 +97,15 @@ export default function Checkout() {
     return !Object.values(newErrors).some((error) => error !== '');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!validateForm()) {
       return;
     }
-
+    if (!items.length) {
+      return;
+    }
+    console.log('dsfs')
     try {
       setLoading(true);
 
@@ -112,7 +117,7 @@ export default function Checkout() {
         address: form.address,
 
         items: items.map((item) => ({
-          menu_item_id: item.id,
+          menu_item_id: item.menu_item_id,
 
           quantity: item.quantity,
         })),
@@ -120,7 +125,14 @@ export default function Checkout() {
 
       console.log(orderData);
 
-      await createOrder(orderData);
+      const response = await createOrder(orderData);
+console.log('response.data',response.data)
+      const orderDataResponse = response.data;
+
+      localStorage.setItem(
+        'lastOrder',
+        JSON.stringify(orderDataResponse.order),
+      );
 
       clearCart();
 
@@ -275,7 +287,16 @@ mb-6
               : `Order Summary (${cartSummary.totalItems})`}
           </h2>
 
-          <div className='space-y-5'>
+          <div
+            className='
+  space-y-5
+  h-[330px]
+  overflow-y-auto
+  pr-2
+  scrollbar-thin
+  '
+          >
+            {' '}
             {cartLoading
               ? [1, 2].map((item) => (
                   <div
@@ -431,20 +452,10 @@ font-bold
             </div>
           </div>
           <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className='
-w-full
-mt-6
-py-4
-rounded-xl
-bg-orange-500
-text-white
-font-bold
-hover:bg-orange-600
-transition
-disabled:opacity-50
-'
+            onClick={() => handleSubmit()}
+            disabled={loading || cartLoading}
+            className=' w-full mt-6 py-4 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 transition disabled:opacity-50
+  '
           >
             {loading ? 'Placing Order...' : 'Place Order'}
           </button>
