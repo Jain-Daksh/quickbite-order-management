@@ -97,65 +97,6 @@ export default function TrackOrderPage() {
     >
       <div className='container-page'>
         <div className='max-w-3xl mx-auto'>
-          <div className='text-center'>
-            <span className='inline-block px-4 py-2 rounded-full bg-orange-100 text-orange-600 font-semibold text-sm'>
-              Track Your Order
-            </span>
-
-            <p className='mt-5 text-muted max-w-xl mx-auto'>
-              Enter your Order Number and registered phone number to check your
-              order status.
-            </p>
-          </div>
-
-          {/* <div className="card mt-10 p-8">
-            <form
-              onSubmit={handleTrackOrder}
-              className="space-y-5"
-            >
-              <div>
-                <label className="block mb-2 font-medium">
-                  Order Number
-                </label>
-
-                <input
-                  type="number"
-                  className="input"
-                  placeholder="Enter Order Number"
-                  value={orderId}
-                  onChange={(e) => setOrderId(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="block mb-2 font-medium">
-                  Phone Number
-                </label>
-
-                <input
-                  type="tel"
-                  className="input"
-                  placeholder="Enter Registered Phone Number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="btn-primary w-full"
-                disabled={loading}
-              >
-                {loading ? 'Tracking Order...' : 'Track Order'}
-              </button>
-            </form>
-
-            {error && (
-              <div className="mt-5 rounded-lg border border-red-200 bg-red-50 p-4 text-red-600">
-                {error}
-              </div>
-            )}
-          </div> */}
           {!order ? (
             <>
               {/* Heading */}
@@ -167,7 +108,7 @@ export default function TrackOrderPage() {
 
                 <p className='mt-5 text-muted max-w-xl mx-auto'>
                   Enter your Order Number and registered phone number to check
-                  your pizza status.
+                  your order status.
                 </p>
               </div>
 
