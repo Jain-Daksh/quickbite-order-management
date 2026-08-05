@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import MenuCard from '../components/MenuCard';
 import CategoryFilter from '../components/CategoryFilter';
 import { getAllMenu } from '../api';
-
+import { useCart } from '../hooks/useCart';
 interface MenuItem {
   id: string;
   name: string;
@@ -21,6 +21,8 @@ export default function Menu() {
   const [categories, setCategories] = useState<string[]>(['All']);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const loadMenu = async () => {
@@ -57,10 +59,6 @@ export default function Menu() {
 
     return categoryMatch && searchMatch;
   });
-
-  const addToCart = (item: MenuItem) => {
-    console.log('Added', item);
-  };
 
   if (loading) {
     return (
@@ -168,7 +166,11 @@ export default function Menu() {
         >
           {filteredMenu.length ? (
             filteredMenu.map((item) => (
-              <MenuCard key={item.id} item={item} onAdd={addToCart} />
+              <MenuCard
+                key={item.id}
+                item={item}
+                onAdd={() => addToCart(item.id)}
+              />
             ))
           ) : (
             <div
