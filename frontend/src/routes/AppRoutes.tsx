@@ -5,6 +5,8 @@ import Menu from '../pages/Menu';
 
 import TrackOrderPage from '../pages/track-order';
 import Cart from '../pages/Cart';
+import Checkout from '../pages/Checkout';
+import OrderSuccess from '../pages/OrderSuccess';
 
 function AppRoutes() {
   return (
@@ -15,6 +17,8 @@ function AppRoutes() {
 
       <Route path='/track-order' element={<TrackOrderPage />} />
       <Route path='/cart' element={<Cart />} />
+      <Route path='/checkout' element={<Checkout />} />
+      <Route path='/order-success' element={<OrderSuccess />} />
     </Routes>
   );
 }
