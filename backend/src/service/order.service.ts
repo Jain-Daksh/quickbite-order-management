@@ -1,6 +1,7 @@
 import { sequelize, businessConfig } from '../config';
 import { Order, OrderItem, MenuItem } from '../models';
 import { OrderStatus } from '../models/Order';
+import { Server } from 'socket.io';
 
 interface CreateOrderInput {
   customer_name: string;
@@ -13,7 +14,7 @@ interface CreateOrderInput {
 }
 
 export class OrderService {
-  static async createOrder(data: CreateOrderInput) {
+  static async createOrder(data: CreateOrderInput, io: Server) {
     const transaction = await sequelize.transaction();
 
     try {
@@ -86,6 +87,7 @@ export class OrderService {
       );
 
       await transaction.commit();
+      this.simulateOrderStatus(order.id, io);
 
       return {
         order,
@@ -97,8 +99,6 @@ export class OrderService {
       throw error;
     }
   }
-
-  
 
   static async getOrderById(id: string, phone: string) {
     const order = await Order.findOne({
@@ -141,5 +141,43 @@ export class OrderService {
     await order.save();
 
     return order;
+  }
+
+  static simulateOrderStatus(orderId: string, io: any) {
+    const updateStatus = async (status: OrderStatus) => {
+      const order = await Order.findByPk(orderId);
+
+      if (!order) return;
+
+      order.status = status;
+
+      await order.save();
+
+      io.to(`order-${orderId}`).emit('order-status-updated', {
+        orderId,
+        status,
+      });
+    };
+
+    setTimeout(
+      async () => {
+        await updateStatus('PREPARING' as OrderStatus);
+
+        setTimeout(
+          async () => {
+            await updateStatus('OUT_FOR_DELIVERY' as OrderStatus);
+
+            setTimeout(
+              async () => {
+                await updateStatus('DELIVERED' as OrderStatus);
+              },
+              2 * 60 * 1000,
+            );
+          },
+          2 * 60 * 1000,
+        );
+      },
+      2 * 60 * 1000,
+    );
   }
 }
