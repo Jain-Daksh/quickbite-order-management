@@ -24,13 +24,6 @@ interface Order {
   items: OrderItem[];
 }
 
-const statusStyles: Record<string, string> = {
-  ORDER_RECEIVED: 'bg-blue-100 text-blue-700',
-  PREPARING: 'bg-yellow-100 text-yellow-700',
-  OUT_FOR_DELIVERY: 'bg-orange-100 text-orange-700',
-  DELIVERED: 'bg-green-100 text-green-700',
-  CANCELLED: 'bg-red-100 text-red-700',
-};
 
 export default function TrackOrderPage() {
   const [orderId, setOrderId] = useState('');
@@ -39,11 +32,37 @@ export default function TrackOrderPage() {
   const [error, setError] = useState('');
   const [order, setOrder] = useState<Order | null>(null);
 
+
+  const validateForm = () => {
+    if (!orderId.trim()) {
+      return 'Please enter Order Number.';
+    }
+
+    if (!/^\d+$/.test(orderId)) {
+      return 'Order Number must contain only numbers.';
+    }
+
+    if (!phone.trim()) {
+      return 'Please enter Phone Number.';
+    }
+
+    if (!/^\d+$/.test(phone)) {
+      return 'Phone Number must contain only numbers.';
+    }
+
+    if (phone.length !== 10) {
+      return 'Phone Number must be exactly 10 digits.';
+    }
+
+    return '';
+  };
   const handleTrackOrder = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!orderId || !phone) {
-      setError('Please enter Order ID and Phone Number.');
+    const validationError = validateForm();
+
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -175,11 +194,17 @@ export default function TrackOrderPage() {
                     </label>
 
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={10}
                       className="input"
                       placeholder="Enter Order Number"
                       value={orderId}
-                      onChange={(e) => setOrderId(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        setOrderId(value);
+                      }}
                     />
                   </div>
 
@@ -191,10 +216,16 @@ export default function TrackOrderPage() {
 
                     <input
                       type="tel"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={10}
                       className="input"
                       placeholder="Enter Phone Number"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        setPhone(value);
+                      }}
                     />
                   </div>
 
@@ -202,7 +233,11 @@ export default function TrackOrderPage() {
                   <button
                     type="submit"
                     className="btn-primary w-full"
-                    disabled={loading}
+                    disabled={
+                      loading ||
+                      orderId.length === 0 ||
+                      phone.length !== 10
+                    }
                   >
                     {loading ? 'Tracking Order...' : 'Track Order'}
                   </button>
