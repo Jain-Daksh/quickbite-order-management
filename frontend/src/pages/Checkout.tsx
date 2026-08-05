@@ -9,6 +9,11 @@ export default function Checkout() {
 
   const { items, clearCart } = useCart();
 
+  const [errors, setErrors] = useState({
+    customer_name: '',
+    phone: '',
+    address: '',
+  });
   const [form, setForm] = useState({
     customer_name: '',
     phone: '',
@@ -25,14 +30,76 @@ export default function Checkout() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    const { name, value } = e.target;
+
+    if (name === 'customer_name') {
+      // only alphabets and spaces
+      if (!/^[a-zA-Z\s]*$/.test(value)) {
+        return;
+      }
+
+      if (value.length > 45) {
+        return;
+      }
+    }
+
+    if (name === 'phone') {
+      // only numbers
+      if (!/^[0-9]*$/.test(value)) {
+        return;
+      }
+
+      if (value.length > 10) {
+        return;
+      }
+    }
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    setErrors({
+      ...errors,
+      [name]: '',
+    });
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      customer_name: '',
+      phone: '',
+      address: '',
+    };
+
+    if (!form.customer_name.trim()) {
+      newErrors.customer_name = 'Name is required';
+    } else if (form.customer_name.trim().length < 3) {
+      newErrors.customer_name = 'Name must be at least 3 characters';
+    }
+
+    if (!form.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (form.phone.length !== 10) {
+      newErrors.phone = 'Phone number must be exactly 10 digits';
+    }
+
+    if (!form.address.trim()) {
+      newErrors.address = 'Address is required';
+    } else if (form.address.trim().length < 5) {
+      newErrors.address = 'Address must be at least 5 characters';
+    }
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some((error) => error !== '');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
 
     try {
       setLoading(true);
@@ -152,7 +219,11 @@ mb-8
                 onChange={handleChange}
               />
             </div>
-
+            {errors.customer_name && (
+              <p className='text-red-500 text-sm mt-1'>
+                {errors.customer_name}
+              </p>
+            )}
             <div>
               <label className='font-semibold'>Phone</label>
 
@@ -164,7 +235,9 @@ mb-8
                 onChange={handleChange}
               />
             </div>
-
+            {errors.phone && (
+              <p className='text-red-500 text-sm mt-1'>{errors.phone}</p>
+            )}
             <div>
               <label className='font-semibold'>Address</label>
 
@@ -181,6 +254,9 @@ resize-none
                 onChange={handleChange}
               />
             </div>
+            {errors.address && (
+              <p className='text-red-500 text-sm mt-1'>{errors.address}</p>
+            )}
           </form>
         </div>
 
