@@ -514,8 +514,316 @@ Serializer
   ↓
 Response
 ```
+QuickBite Order Management Frontend
+14. Frontend Overview
+
+QuickBite Frontend is a responsive food ordering application built using React, TypeScript, Tailwind CSS, and React Router.
+
+The frontend allows users to:
+
+Browse menu items
+Search food
+Filter by category
+Add items to cart
+Update cart quantity
+Remove cart items
+Checkout with customer details
+Place orders
+Track order status
+15. Frontend Tech Stack
+Frontend
+React.js
+TypeScript
+Vite
+Styling
+Tailwind CSS
+Routing
+React Router DOM
+State Management
+Custom React Hooks
+Context API
+API Communication
+Axios
+16. Frontend Project Structure
+frontend
+│
+├── src
+│   │
+│   ├── api
+│   │   └── index.ts
+│   │
+│   ├── components
+│   │   ├── Header.tsx
+│   │   ├── MenuCard.tsx
+│   │   ├── CategoryFilter.tsx
+│   │   └── Loader.tsx
+│   │
+│   ├── hooks
+│   │   └── useCart.ts
+│   │
+│   ├── pages
+│   │   ├── Home.tsx
+│   │   ├── Menu.tsx
+│   │   ├── Cart.tsx
+│   │   ├── Checkout.tsx
+│   │   ├── OrderSuccess.tsx
+│   │   └── TrackOrder.tsx
+│   │
+│   ├── context
+│   │   └── CartContext.tsx
+│   │
+│   ├── routes
+│   │   └── AppRoutes.tsx
+│   │
+│   ├── App.tsx
+│   └── main.tsx
+│
+├── package.json
+└── vite.config.ts
+17. Frontend Environment Configuration
+
+Create:
+
+.env
+
+Example:
+
+VITE_API_URL=https://quickbite-order-management-raftlabs.onrender.com/api
+18. Frontend Pages
+Home Page
+
+Features:
+
+Hero section
+Restaurant introduction
+Call to action
+
+Route:
+
+/
+Menu Page
+
+Route:
+
+/menu
+
+Features:
+
+Fetch menu from backend
+Category filtering
+Food search
+Add to cart
+
+API:
+
+GET /api/menu
+
+Example:
+
+const response = await getAllMenu();
+Cart Page
+
+Route:
+
+/cart
+
+Features:
+
+Display selected items
+Increase quantity
+Decrease quantity
+Remove items
+Show subtotal
+
+Cart data stored:
+
+[
+ {
+  "menu_item_id":"uuid",
+  "quantity":2
+ }
+]
+Checkout Page
+
+Route:
+
+/checkout
+
+Collects:
+
+Customer name
+Phone number
+Address
+
+Validation:
+
+Name
+minimum 3 characters
+
+Phone
+exactly 10 digits
+
+Address
+minimum 5 characters
+
+Creates payload:
+
+{
+ "customer_name":"Daksh",
+ "phone":"9999999999",
+ "address":"Udaipur Rajasthan",
+ "items":[
+   {
+    "menu_item_id":"uuid",
+    "quantity":2
+   }
+ ]
+}
+
+API:
+
+POST /api/orders
+Order Success Page
+
+Route:
+
+/order-success
+
+Displays:
+
+Order number
+Customer name
+Total amount
+Current status
+
+Example:
+
+{
+ "order_number":"10005",
+ "status":"ORDER_RECEIVED",
+ "total_amount":"6378.00"
+}
+Track Order Page
+
+Route:
+
+/track-order
+
+Allows customer to search order.
+
+Input:
+
+Order Number
+Phone Number
+
+API:
+
+POST /api/orders/search
+
+Request:
+
+{
+ "orderNumber":"10005",
+ "phone":"9999999999"
+}
+
+Displays:
+
+Order number
+Customer details
+Items
+Quantity
+Total amount
+Order status
+
+Status flow:
+
+ORDER_RECEIVED
+        ↓
+PREPARING
+        ↓
+OUT_FOR_DELIVERY
+        ↓
+DELIVERED
+19. Cart Flow
+User clicks Add
+
+      ↓
+
+Cart Context updates state
+
+      ↓
+
+Data stored in localStorage
+
+      ↓
+
+Cart page reads items
+
+      ↓
+
+Checkout sends order request
+
+      ↓
+
+Cart cleared after success
+20. API Integration
+
+Example:
+
+import axios from "axios";
+
+
+const api = axios.create({
+
+ baseURL:
+ import.meta.env.VITE_API_URL
+
+});
+
+
+export default api;
+21. Deployment
+
+Frontend deployed on:
+
+Vercel
+
+Backend deployed on:
+
+Render
+
+Database:
+
+Neon PostgreSQL
+
+Production flow:
+
+User
+ |
+ ↓
+Vercel React App
+ |
+ ↓
+Render Express API
+ |
+ ↓
+Neon PostgreSQL
+22. Features Completed
+
+✅ Responsive UI
+✅ Menu browsing
+✅ Category filtering
+✅ Search food
+✅ Cart management
+✅ Quantity validation
+✅ Checkout flow
+✅ Order creation
+✅ Order tracking
+✅ Backend API integration
+✅ Loading states
+✅ Error handling
+✅ Mobile responsive design
 
 
 
-
-backend url : https://quickbite-order-management-raftlabs.onrender.com/
