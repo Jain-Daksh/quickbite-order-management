@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Home() {
   return (
     <div>
@@ -70,25 +72,28 @@ justify-center
 gap-4
 '
             >
-              <button
-                className=' mt-8
+              <Link to='/menu'>
+                <button
+                  className=' mt-8
 flex
 justify-center
 gap-4
 btn-primary'
-              >
-                Explore Menu
-              </button>
-
-              <button
-                className='mt-8
+                >
+                  Explore Menu
+                </button>
+              </Link>
+              <Link to='/track-order'>
+                <button
+                  className='mt-8
 flex
 justify-center
 gap-4
 btn-secondary'
-              >
-                Track Order
-              </button>
+                >
+                  Track Order
+                </button>
+              </Link>
             </div>
           </div>
         </div>
