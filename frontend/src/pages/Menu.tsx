@@ -1,9 +1,6 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { getAllMenu } from '../api/index';
-
-
 interface MenuItem {
   id: string;
   name: string;
@@ -14,36 +11,22 @@ interface MenuItem {
   is_available: boolean;
 }
 
-
-
 export default function MenuPage() {
-
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-
   const [activeCategory, setActiveCategory] = useState('ALL');
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   useEffect(() => {
-
     const loadMenu = async () => {
-
       try {
-
         setLoading(true);
         setError('');
-
         const response = await getAllMenu();
-
         const menuData: MenuItem[] = response.data;
-
         setMenu(menuData);
         setFilteredMenu(menuData);
-
-
         const uniqueCategories = [
           'ALL',
           ...new Set(
@@ -52,49 +35,25 @@ export default function MenuPage() {
             )
           )
         ];
-
-
         setCategories(
           uniqueCategories as string[]
         );
-
-
       } catch (err) {
-
+        console.log('err', err)
         setError('Unable to load menu.');
-
       } finally {
-
         setLoading(false);
-
       }
-
     };
-
-
     loadMenu();
-
   }, []);
 
-
-
-
-
-
   const handleCategory = (category: string) => {
-
-
     setActiveCategory(category);
-
-
-
     if (category === 'ALL') {
-
       setFilteredMenu(menu);
-
     }
     else {
-
       setFilteredMenu(
         menu.filter(
           item =>
@@ -106,61 +65,29 @@ export default function MenuPage() {
 
   };
 
-
-
-
-
-
   if (loading) {
-
     return (
-
       <section className="py-20">
-
         <div className="container-page text-center">
-
           <p className="text-muted text-lg">
             Loading menu...
           </p>
-
         </div>
-
       </section>
-
     );
-
   }
 
-
-
-
-
-
   if (error) {
-
     return (
-
       <section className="py-20">
-
         <div className="container-page text-center">
-
           <p className="text-red-500">
             {error}
           </p>
-
         </div>
-
       </section>
-
     );
-
   }
-
-
-
-
-
-
 
   return (
 
@@ -175,19 +102,8 @@ export default function MenuPage() {
       py-20
       "
     >
-
-
       <div className="container-page">
-
-
-
-
-
-        {/* Header */}
-
-
         <div className="text-center mb-12">
-
 
           <span
             className="
@@ -205,10 +121,6 @@ export default function MenuPage() {
             Our Menu
 
           </span>
-
-
-
-
           <h1
             className="
             mt-5
@@ -219,12 +131,7 @@ export default function MenuPage() {
           >
 
             Fresh & Delicious Food
-
           </h1>
-
-
-
-
           <p
             className="
             mt-3
@@ -239,20 +146,7 @@ export default function MenuPage() {
 
           </p>
 
-
         </div>
-
-
-
-
-
-
-
-
-        {/* Category Buttons */}
-
-
-
         <div
           className="
           flex
@@ -313,21 +207,7 @@ export default function MenuPage() {
 
             ))
           }
-
-
         </div>
-
-
-
-
-
-
-
-
-
-        {/* Menu Cards */}
-
-
         <div
           className="
           grid
@@ -338,12 +218,8 @@ export default function MenuPage() {
           gap-6
           "
         >
-
-
           {
             filteredMenu.map(item => (
-
-
               <div
                 key={item.id}
                 className="
@@ -353,26 +229,15 @@ export default function MenuPage() {
                 group
                 "
               >
-
-
-
-                {/* Image */}
-
-
                 <div
                   className="
                   h-56
                   overflow-hidden
                   "
                 >
-
-
                   <img
-
                     src={item.image_url}
-
                     alt={item.name}
-
                     className="
                     w-full
                     h-full
@@ -381,30 +246,13 @@ export default function MenuPage() {
                     transition
                     duration-300
                     "
-
                   />
-
-
                 </div>
-
-
-
-
-
-
-
-
-                {/* Content */}
-
-
                 <div
                   className="
                   p-5
                   "
                 >
-
-
-
                   <div
                     className="
                     flex
@@ -412,22 +260,14 @@ export default function MenuPage() {
                     gap-3
                     "
                   >
-
-
-
                     <h3
                       className="
                       text-xl
                       font-bold
                       "
                     >
-
                       {item.name}
-
                     </h3>
-
-
-
 
                     <span
                       className="
@@ -438,19 +278,9 @@ export default function MenuPage() {
                     >
 
                       ₹{Number(item.price).toFixed(0)}
-
                     </span>
 
-
-
                   </div>
-
-
-
-
-
-
-
                   <p
                     className="
                     text-muted
@@ -464,12 +294,6 @@ export default function MenuPage() {
 
                   </p>
 
-
-
-
-
-
-
                   <div
                     className="
                     flex
@@ -478,8 +302,6 @@ export default function MenuPage() {
                     mt-5
                     "
                   >
-
-
 
                     <span
                       className="
@@ -496,11 +318,6 @@ export default function MenuPage() {
                       {item.category}
 
                     </span>
-
-
-
-
-
 
                     <button
 
@@ -526,36 +343,13 @@ export default function MenuPage() {
                           'Sold Out'
                       }
 
-
                     </button>
-
-
-
                   </div>
-
-
-
-
-
                 </div>
-
-
-
               </div>
-
-
             ))
           }
-
-
-
         </div>
-
-
-
-
-
-
         {
           filteredMenu.length === 0 && (
 
@@ -566,21 +360,11 @@ export default function MenuPage() {
               text-muted
               "
             >
-
               No items found.
-
             </div>
-
           )
         }
-
-
-
       </div>
-
-
-    </section>
-
-  );
+    </section>);
 
 }
