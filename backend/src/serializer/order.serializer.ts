@@ -1,7 +1,7 @@
 export const show = async (order: any) => {
   return {
     order_number: order.order_number,
-
+    id: order.id,
     customer_name: order.customer_name,
 
     phone: order.phone,
