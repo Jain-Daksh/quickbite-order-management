@@ -69,7 +69,6 @@ export default function TrackOrderPage() {
   const handleTrackOrder = async (e: FormEvent) => {
     e.preventDefault();
 
-    const validationError = validateForm();
 
     if (!validateForm()) {
       return;
