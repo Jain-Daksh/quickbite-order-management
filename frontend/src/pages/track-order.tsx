@@ -38,37 +38,40 @@ export default function TrackOrderPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [order, setOrder] = useState<Order | null>(null);
-
+  const [errors, setErrors] = useState({
+    orderId: '',
+    phone: '',
+  });
   const validateForm = () => {
-    if (!orderId.trim()) {
-      return 'Please enter Order Number.';
-    }
+    const newErrors = {
+      orderId: '',
+      phone: '',
+    };
 
-    if (!/^\d+$/.test(orderId)) {
-      return 'Order Number must contain only numbers.';
+    if (!orderId.trim()) {
+      newErrors.orderId = 'Order Number is required';
+    } else if (!/^\d+$/.test(orderId)) {
+      newErrors.orderId = 'Order Number must contain only numbers';
     }
 
     if (!phone.trim()) {
-      return 'Please enter Phone Number.';
+      newErrors.phone = 'Phone Number is required';
+    } else if (!/^\d+$/.test(phone)) {
+      newErrors.phone = 'Phone Number must contain only numbers';
+    } else if (phone.length !== 10) {
+      newErrors.phone = 'Phone Number must be exactly 10 digits';
     }
 
-    if (!/^\d+$/.test(phone)) {
-      return 'Phone Number must contain only numbers.';
-    }
+    setErrors(newErrors);
 
-    if (phone.length !== 10) {
-      return 'Phone Number must be exactly 10 digits.';
-    }
-
-    return '';
+    return !Object.values(newErrors).some((error) => error !== '');
   };
   const handleTrackOrder = async (e: FormEvent) => {
     e.preventDefault();
 
     const validationError = validateForm();
 
-    if (validationError) {
-      setError(validationError);
+    if (!validateForm()) {
       return;
     }
 
@@ -84,7 +87,7 @@ export default function TrackOrderPage() {
 
       setOrder(response.data);
       const currentOrder = response.data;
-console.log('currentOrder',currentOrder)
+      console.log('currentOrder', currentOrder);
       socket.emit('join-order', currentOrder.id);
 
       socket.on('order-status-updated', (data) => {
@@ -154,16 +157,27 @@ console.log('currentOrder',currentOrder)
                     <input
                       type='text'
                       inputMode='numeric'
-                      pattern='[0-9]*'
                       maxLength={10}
                       className='input'
                       placeholder='Enter Order Number'
                       value={orderId}
                       onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, '');
+
                         setOrderId(value);
+
+                        setErrors({
+                          ...errors,
+                          orderId: '',
+                        });
                       }}
                     />
+
+                    {errors.orderId && (
+                      <p className='text-red-500 text-sm mt-1'>
+                        {errors.orderId}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -174,24 +188,33 @@ console.log('currentOrder',currentOrder)
                     <input
                       type='tel'
                       inputMode='numeric'
-                      pattern='[0-9]*'
                       maxLength={10}
                       className='input'
                       placeholder='Enter Phone Number'
                       value={phone}
                       onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, '');
+
                         setPhone(value);
+
+                        setErrors({
+                          ...errors,
+                          phone: '',
+                        });
                       }}
                     />
+
+                    {errors.phone && (
+                      <p className='text-red-500 text-sm mt-1'>
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
 
                   <button
                     type='submit'
                     className='btn-primary w-full'
-                    disabled={
-                      loading || orderId.length === 0 || phone.length !== 10
-                    }
+                    disabled={loading}
                   >
                     {loading ? 'Tracking Order...' : 'Track Order'}
                   </button>
@@ -302,7 +325,7 @@ ${progress}
               {/* Items */}
 
               <div className='card p-8'>
-                <h3 className='text-xl font-bold mb-6'>🍕 Your Pizza</h3>
+                <h3 className='text-xl font-bold mb-6'>Your Items</h3>
 
                 <div className='space-y-5'>
                   {order.items.map((item) => (
