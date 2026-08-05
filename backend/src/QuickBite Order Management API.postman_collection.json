@@ -96,15 +96,6 @@
 						"url": "{{baseUrl}}/orders/{{orderId}}/status"
 					},
 					"response": []
-				},
-				{
-					"name": "Cancel Order",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": "{{baseUrl}}/orders/{{orderId}}"
-					},
-					"response": []
 				}
 			]
 		}
