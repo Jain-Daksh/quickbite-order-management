@@ -2,6 +2,7 @@ import { sequelize, businessConfig } from '../config';
 import { Order, OrderItem, MenuItem } from '../models';
 import { OrderStatus } from '../models/Order';
 import { Server } from 'socket.io';
+import { getSocketIO } from '../socket';
 
 interface CreateOrderInput {
   customer_name: string;
@@ -14,8 +15,11 @@ interface CreateOrderInput {
 }
 
 export class OrderService {
-  static async createOrder(data: CreateOrderInput, io: Server) {
+  static async createOrder(data: CreateOrderInput,
+    //  io: Server
+    ) {
     const transaction = await sequelize.transaction();
+const io = getSocketIO();
 
     try {
       let total_amount = 0;
