@@ -40,7 +40,6 @@ io.on('connection', (socket) => {
   });
 });
 
-
 app.use(
   cors({
     origin: [
@@ -60,6 +59,9 @@ initModels(sequelize);
 
 const PORT = Number(process.env.PORT) || 5000;
 
-server.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
-});
+export default app;
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => {
+    console.log(`Server running on ${PORT}`);
+  });
+}
